@@ -5,7 +5,6 @@ class NewPlay {
   String ballPlacement;
   String typeOfPlay;
   String nameOfPlay;
-  String penalty;
   String kick;
   String specificType;
   String endResult;
@@ -20,12 +19,36 @@ class NewPlay {
     this.ballPlacement,
     this.typeOfPlay,
     this.nameOfPlay,
-    this.penalty,
-    this.kick,
     this.specificType,
     this.endResult,
     this.netYardage,
     this.typeOfTurnover,
     this.points,
   });
+
+  NewPlay.fromJson(Map<String, dynamic> json)
+      : formation = json['formation'],
+        strength = json['strength'],
+        ballPlacement = json['ballPlacement'],
+        typeOfPlay = json['typeOfPlay'],
+        nameOfPlay = json['nameOfPlay'],
+        specificType = json['specificType'],
+        endResult = json['endResult'],
+        netYardage = json['netYardage'],
+        typeOfTurnover = json['typeOfTurnover'],
+        points = json['points'];
+  
+  Map<String, dynamic> toJson() =>
+  {
+    'formation': this.formation,
+    'strength': this.strength, 
+    'ballPlacement': this.ballPlacement,
+    'typeOfPlay': this.typeOfPlay,
+    'nameOfPlay': this.nameOfPlay,
+    'specificType': this.specificType,
+    'endResult': this.endResult,
+    'netYardage': this.netYardage,
+    'typeOfTurnover': this.typeOfTurnover,
+    'points': this.points,
+  };
 }
