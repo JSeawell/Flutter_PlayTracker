@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import '../Models/New_Play.dart';
-import '../Models/Game.dart';
-import '../Screens/home_page_screen.dart';
+import '../Screens/in_game_screen.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class KickPlayScreen extends StatefulWidget {
 
-  Game game = Game();
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays;
   NewPlay newPlay = NewPlay();
   
-  KickPlayScreen({Key key, this.game, this.newPlay}) : super(key: key);
+  KickPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.newPlay}) : super(key: key);
 
   @override
   _KickPlayScreenState createState() => _KickPlayScreenState();
@@ -147,32 +148,36 @@ class _KickPlayScreenState extends State<KickPlayScreen> {
                     color: Colors.green,
                     onPressed: (){
                       if (_radioChoice == 1){
-                        widget.newPlay.kick = "Punt";
+                        widget.newPlay.specificType = "Punt";
                         widget.newPlay.points = 0;
                       }
                       else if (_radioChoice == 2){
-                        widget.newPlay.kick = "PAT";
                         if (isSwitched == false){
+                          widget.newPlay.specificType = "PAT (made)";
                           widget.newPlay.points = 1;
                         }
                         else{
+                          widget.newPlay.specificType = "PAT (missed)";
                           widget.newPlay.points = 0;
                         }
                       }
                       else if (_radioChoice == 3){
-                        widget.newPlay.kick = "Field Goal";
                         if (isSwitched == false){
+                          widget.newPlay.specificType = "Field Goal (made)";
                           widget.newPlay.points = 3;
                         }
                         else{
+                          widget.newPlay.specificType = "Field Goal (missed)";
                           widget.newPlay.points = 0;
                         }
+                        widget.newPlay.netYardage = _currentValue;
                       }
-                      //print("Kick Added");
                       
-                      //add play to db
+                      //add play to game
+                      //widget.listOfPlays.add("${widget.newPlay.typeOfPlay} ${widget.newPlay.netYardage.toString()}");
+                      widget.listOfPlays.add(widget.newPlay.toJson());
 
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays)));
                   }
                 ),
               ),

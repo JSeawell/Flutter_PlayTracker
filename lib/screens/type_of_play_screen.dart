@@ -9,10 +9,12 @@ import '../Screens/kick_play_screen.dart';
 
 class TypeOfPlayScreen extends StatefulWidget {
 
-  Game game = Game();
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays = [];
   NewPlay newPlay = NewPlay();
   
-  TypeOfPlayScreen({Key key, this.game, this.newPlay}) : super(key: key);
+  TypeOfPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.newPlay}) : super(key: key);
 
   @override
   _TypeOfPlayScreenState createState() => _TypeOfPlayScreenState();
@@ -186,23 +188,23 @@ class _TypeOfPlayScreenState extends State<TypeOfPlayScreen> {
                     onPressed: (){
                     if (_radioChoice == 1){
                       widget.newPlay.typeOfPlay = "Pre-Play Penalty";
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PrePenaltyScreen(game: widget.game, newPlay: widget.newPlay)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PrePenaltyScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                     }
                     else if (_radioChoice == 2){
                       widget.newPlay.typeOfPlay = "Run";
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => RunPlayScreen(game: widget.game, newPlay: widget.newPlay)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RunPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                     }
                     else if (_radioChoice == 3){
                       widget.newPlay.typeOfPlay = "Pass";
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PassPlayScreen(game: widget.game, newPlay: widget.newPlay)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PassPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                     }
                     else if (_radioChoice == 4){
                       widget.newPlay.typeOfPlay = "Kick";
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => KickPlayScreen(game: widget.game, newPlay: widget.newPlay)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => KickPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                     }
                     else{
                       widget.newPlay.typeOfPlay = "Pre-Play Penalty";
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PostPenaltyScreen(game: widget.game, newPlay: widget.newPlay)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PostPenaltyScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                     }
                   }
                 ),

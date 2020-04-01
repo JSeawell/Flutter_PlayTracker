@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import '../Screens/home_page_screen.dart';
+import '../Screens/in_game_screen.dart';
 import '../Models/New_Play.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class TurnoverScreen extends StatefulWidget {
 
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays;
   NewPlay newPlay = NewPlay();
 
-  TurnoverScreen({Key key, this.newPlay}) : super(key: key);
+  TurnoverScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.newPlay}) : super(key: key);
 
   @override
   _TurnoverScreenState createState() => _TurnoverScreenState();
@@ -74,10 +77,11 @@ class _TurnoverScreenState extends State<TurnoverScreen> {
                       widget.newPlay.netYardage = _currentValue;
                     }
                     
-                    //save play
+                    //add play to game
+                    //widget.listOfPlays.add("${widget.newPlay.formation} ${widget.newPlay.strength} ${widget.newPlay.ballPlacement} ${widget.newPlay.typeOfPlay} ${widget.newPlay.specificType} ${widget.newPlay.netYardage.toString()}");
+                    widget.listOfPlays.add(widget.newPlay.toJson());
 
-                    
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays)));
                   }
                 ),
               ),

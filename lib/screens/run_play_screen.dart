@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../Screens/home_page_screen.dart';
+import '../Screens/in_game_screen.dart';
 import '../Screens/turnover_screen.dart';
-import '../Models/Game.dart';
 import '../Models/New_Play.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class RunPlayScreen extends StatefulWidget {
 
-  Game game = Game();
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays;
   NewPlay newPlay = NewPlay();
 
-  RunPlayScreen({Key key, this.game, this.newPlay}) : super(key: key);
+  RunPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.newPlay}) : super(key: key);
 
   @override
   _RunPlayScreenState createState() => _RunPlayScreenState();
@@ -99,7 +100,7 @@ class _RunPlayScreenState extends State<RunPlayScreen> {
 
                   if (_radioChoice2 == 2){
                     widget.newPlay.endResult = "Turnover";
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => TurnoverScreen(newPlay: widget.newPlay,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => TurnoverScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: widget.newPlay)));
                   }
                   else{
                     if (_radioChoice2 == 1){
@@ -107,11 +108,15 @@ class _RunPlayScreenState extends State<RunPlayScreen> {
                     }
                     else if (_radioChoice2 == 3){
                       widget.newPlay.endResult = "TD";
+                      widget.newPlay.points = 6;
                     }
                     widget.newPlay.netYardage = _currentValue;
-                    //save play
+                    
+                    //add play to game
+                    //widget.listOfPlays.add("${widget.newPlay.formation} ${widget.newPlay.strength} ${widget.newPlay.ballPlacement} ${widget.newPlay.typeOfPlay} ${widget.newPlay.specificType} ${widget.newPlay.netYardage.toString()}");
+                    widget.listOfPlays.add(widget.newPlay.toJson());
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays)));
                   }
 
                 }

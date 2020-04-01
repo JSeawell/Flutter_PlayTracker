@@ -5,9 +5,11 @@ import '../Models/New_Play.dart';
 
 class NewPlayScreen extends StatefulWidget {
 
-  Game game = Game();
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays = [];
   
-  NewPlayScreen({Key key, this.game}) : super(key: key);
+  NewPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays}) : super(key: key);
 
   @override
   _NewPlayScreenState createState() => _NewPlayScreenState();
@@ -174,7 +176,7 @@ class _NewPlayScreenState extends State<NewPlayScreen> {
                   }
                   //print(newPlay.ballPlacement);
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TypeOfPlayScreen(game: widget.game, newPlay: newPlay)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => TypeOfPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: newPlay)));
 
                 }
               ),

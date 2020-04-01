@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Models/Game.dart';
 import 'package:intl/intl.dart';
+import '../Screens/in_game_screen.dart';
 
 class SpecificGameScreen extends StatefulWidget {
   
@@ -42,24 +43,20 @@ class _SpecificGameScreenState extends State<SpecificGameScreen> {
   }
 }
 
-Widget ListOfPlays(BuildContext context, plays){
-  return ListView.builder(
-    padding: const EdgeInsets.all(5),
-    itemCount: plays.length,
-    itemBuilder: (BuildContext context, int index) {
-      return Card(
-        color: Colors.green,
-        child: Center(
-          child: Padding(padding: EdgeInsets.all(5), 
-            child:Text(
-              '${index + 1}.  ${plays[index]}',
-              style: TextStyle(color: Colors.white),
-            )
-          )
-        ),
-      );
-    }
-  );
+Widget ListOfPlays(BuildContext context, List<dynamic> plays){
+  if (plays.length < 1){
+    return Center(child: Text("No recorded plays", style: TextStyle(fontSize: 30)));
+  }
+  else{
+    plays = plays.reversed.toList();
+    return ListView.builder(
+      padding: const EdgeInsets.all(5),
+      itemCount: plays.length,
+      itemBuilder: (BuildContext context, int index) {
+        return PlayListItem(context, plays[index], plays.length - index);
+      }
+    );
+  }
 }
 
 Widget GameAnalytics(BuildContext context){

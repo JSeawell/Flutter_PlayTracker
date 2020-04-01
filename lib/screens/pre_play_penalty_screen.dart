@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:play_tracker/Models/New_Play.dart';
 import '../Models/Game.dart';
-import '../Screens/home_page_screen.dart';
 import 'in_game_screen.dart';
 
 class PrePenaltyScreen extends StatefulWidget {
 
-  Game game = Game();
+  DateTime contestDate;
+  String opponent;
+  List<dynamic> listOfPlays  = [];
   NewPlay newPlay = NewPlay();
   
-  PrePenaltyScreen({Key key, this.game, this.newPlay}) : super(key: key);
+  PrePenaltyScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.newPlay}) : super(key: key);
 
   @override
   _PrePenaltyScreenState createState() => _PrePenaltyScreenState();
@@ -135,20 +136,15 @@ class _PrePenaltyScreenState extends State<PrePenaltyScreen> {
                     onPressed: (){
                       if (dropdownValue != "Choose Penalty"){
                         
-                        widget.newPlay.penalty = "$dropdownValue";
+                        widget.newPlay.specificType = "$dropdownValue";
                         widget.newPlay.netYardage = _currentValue;
                         
-                        print(widget.newPlay.formation);
-                        print(widget.newPlay.strength); 
-                        print(widget.newPlay.ballPlacement);
-                        print(widget.newPlay.typeOfPlay);
-                        print(widget.newPlay.penalty);
-                        print(widget.newPlay.netYardage);
-
                         //add play to game
-                        widget.game.allPlays.add("${widget.newPlay.formation} ${widget.newPlay.strength} ${widget.newPlay.ballPlacement} ${widget.newPlay.typeOfPlay} ${widget.newPlay.penalty} ${widget.newPlay.netYardage.toString()}");
+                        //widget.listOfPlays.add("${widget.newPlay.formation} ${widget.newPlay.strength} ${widget.newPlay.ballPlacement} ${widget.newPlay.typeOfPlay} ${widget.newPlay.penalty} ${widget.newPlay.netYardage.toString()}");
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(game: widget.game)));
+                        widget.listOfPlays.add(widget.newPlay.toJson());
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays)));
                       }
                     }
                   ) : Center(child: Text("Please choose a penalty", style: TextStyle(fontSize: 15, color: Colors.red)),),

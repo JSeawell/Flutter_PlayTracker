@@ -137,9 +137,9 @@ Widget SaveEntryButton(BuildContext context, formKey, DateTime Function() getDat
             if (formKey.currentState.validate()){
               formKey.currentState.save();
               DateTime contestDate = await getDate();
-              String opp = await getOpponent();
-              Game newGame = Game(opponent: opp, date: contestDate);
-              Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(game: newGame)));
+              String opponent = await getOpponent();
+              List<dynamic> listOfPlays = [];
+              Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: contestDate, opponent: opponent, listOfPlays: listOfPlays,)));
             }
           },
         ), 
