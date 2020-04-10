@@ -11,6 +11,9 @@ class NewPlay {
   int netYardage;
   String typeOfTurnover;
   int points = 0;
+  int down;
+  int dist;
+  int yardLine;
 
 
   NewPlay({
@@ -24,6 +27,9 @@ class NewPlay {
     this.netYardage,
     this.typeOfTurnover,
     this.points,
+    this.down,
+    this.dist,
+    this.yardLine
   });
 
   NewPlay.fromJson(Map<String, dynamic> json)
@@ -36,7 +42,10 @@ class NewPlay {
         endResult = json['endResult'],
         netYardage = json['netYardage'],
         typeOfTurnover = json['typeOfTurnover'],
-        points = json['points'];
+        points = json['points'],
+        down = json['down'],
+        dist = json['dist'],
+        yardLine = json['yardLine'];
   
   Map<String, dynamic> toJson() =>
   {
@@ -50,5 +59,8 @@ class NewPlay {
     'netYardage': this.netYardage,
     'typeOfTurnover': this.typeOfTurnover,
     'points': this.points,
+    'down': this.down,
+    'dist': this.dist,
+    'yardLine': this.yardLine
   };
 }
