@@ -111,7 +111,7 @@ class _PostPenaltyScreenState extends State<PostPenaltyScreen> {
                   isSwitched == false ? 
                     NumberPicker.integer(
                     initialValue: _currentValue,
-                    minValue: -100,
+                    minValue: widget.newPlay.yardLine < 0 ? widget.newPlay.yardLine : -1*(100 - widget.newPlay.yardLine),
                     maxValue: -1,
                     onChanged: (newValue) =>
                         setState(() => _currentValue = newValue)
@@ -119,7 +119,7 @@ class _PostPenaltyScreenState extends State<PostPenaltyScreen> {
                   NumberPicker.integer(
                   initialValue: _currentValue,
                   minValue: 1,
-                  maxValue: 100,
+                  maxValue: widget.newPlay.yardLine < 0 ? 100 + widget.newPlay.yardLine : widget.newPlay.yardLine,
                   onChanged: (newValue) =>
                       setState(() => _currentValue = newValue)
                 ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Screens/in_game_screen.dart';
+import 'starting_yard_line_screen.dart';
 import 'package:flutter_datetime_formfield/flutter_datetime_formfield.dart';
 import '../Models/Game.dart';
 
@@ -131,7 +131,7 @@ Widget SaveEntryButton(BuildContext context, formKey, DateTime Function() getDat
       child: SizedBox(
         height: 50, width: 200,
         child: RaisedButton(
-          child: Text("Start New Game", style: TextStyle(fontSize: 20, color: Colors.white),),
+          child: Text("Add New Game", style: TextStyle(fontSize: 20, color: Colors.white),),
           color: Colors.green,
           onPressed: () async {
             if (formKey.currentState.validate()){
@@ -139,7 +139,7 @@ Widget SaveEntryButton(BuildContext context, formKey, DateTime Function() getDat
               DateTime contestDate = await getDate();
               String opponent = await getOpponent();
               List<dynamic> listOfPlays = [];
-              Navigator.push(context, MaterialPageRoute(builder: (context) => InGameScreen(contestDate: contestDate, opponent: opponent, listOfPlays: listOfPlays,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StartingYardLineScreen(contestDate: contestDate, opponent: opponent, listOfPlays: listOfPlays)));
             }
           },
         ), 

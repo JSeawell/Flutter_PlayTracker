@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../Screens/type_of_play_screen.dart';
-import '../Models/Game.dart';
 import '../Models/New_Play.dart';
 
 class NewPlayScreen extends StatefulWidget {
@@ -9,7 +8,11 @@ class NewPlayScreen extends StatefulWidget {
   String opponent;
   List<dynamic> listOfPlays = [];
   
-  NewPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays}) : super(key: key);
+  int previousDown;
+  int previousDist;
+  int previousYardLine;
+  
+  NewPlayScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.previousDown, this.previousDist, this.previousYardLine}) : super(key: key);
 
   @override
   _NewPlayScreenState createState() => _NewPlayScreenState();
@@ -128,6 +131,8 @@ class _NewPlayScreenState extends State<NewPlayScreen> {
                 child: Text("Continue", style: TextStyle(fontSize: 30, color: Colors.white),),
                 color: Colors.green,
                 onPressed: (){
+                  
+                  //FORMATION
                   if (_radioChoice == 1){
                     newPlay.formation = "Power I";
                     }
@@ -152,8 +157,8 @@ class _NewPlayScreenState extends State<NewPlayScreen> {
                   else {
                     newPlay.formation = "${myTextController.text}";
                   }
-                  //print(newPlay.formation);
-
+                  
+                  //STRENGTH
                   if (_radioChoice2 == 1){
                     newPlay.strength = "Left";
                   }
@@ -163,8 +168,8 @@ class _NewPlayScreenState extends State<NewPlayScreen> {
                   else if (_radioChoice2 == 3){
                     newPlay.strength = "Right";
                   }
-                  //print(newPlay.strength);
-
+                  
+                  //BALL PLACEMENT
                   if (_radioChoice3 == 1){
                     newPlay.ballPlacement = "on the left hash";
                   }
@@ -174,8 +179,13 @@ class _NewPlayScreenState extends State<NewPlayScreen> {
                   else {
                     newPlay.ballPlacement = "in the middle of the field";
                   }
-                  //print(newPlay.ballPlacement);
-
+                  //DOWN, DISTANCE, YARDLINE, NET-YARDAGE
+                  newPlay.down = widget.previousDown;
+                  newPlay.dist = widget.previousDist;
+                  newPlay.yardLine = widget.previousYardLine;
+                  newPlay.netYardage = 0;
+                  
+                  //GO TO NEXT SCREEN (TYPE OF PLAY)
                   Navigator.push(context, MaterialPageRoute(builder: (context) => TypeOfPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, newPlay: newPlay)));
 
                 }

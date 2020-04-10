@@ -79,7 +79,7 @@ class _RunPlayScreenState extends State<RunPlayScreen> {
             ),
             SizedBox(height: 10),
             _radioChoice2 == 2 ? SizedBox(height:185) : 
-            YardagePicker(context, _currentValue, setMyPicker),
+            YardagePicker(context, widget.newPlay.yardLine, _currentValue, setMyPicker),
             SizedBox(height: 10),
             ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(
               height: 50, width: 200,
@@ -164,7 +164,7 @@ Widget RadioChoice(BuildContext context, String title, int which, int choice, vo
   );
 }
 
-Widget YardagePicker(BuildContext context, int _currentValue, void Function(int newValue) setMyPicker){
+Widget YardagePicker(BuildContext context, int ydline, int _currentValue, void Function(int newValue) setMyPicker){
   return Column(
     children: <Widget> [
       Text("Net Yardage:", style: TextStyle(fontSize: 30),),
@@ -172,8 +172,8 @@ Widget YardagePicker(BuildContext context, int _currentValue, void Function(int 
           data: Theme.of(context).copyWith(accentColor: _currentValue > 0 ? Colors.green: Colors.red),
           child: NumberPicker.integer(
             initialValue: _currentValue,
-            minValue: -100,
-            maxValue: 100,
+            minValue: ydline < 0 ? ydline : -1*(100 - ydline),
+            maxValue: ydline < 0 ? 100 + ydline : ydline,
             onChanged: (newValue) {
               setMyPicker(newValue);
             }

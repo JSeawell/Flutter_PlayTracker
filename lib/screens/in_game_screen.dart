@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:play_tracker/Models/New_Play.dart';
-import 'package:play_tracker/Screens/specific_game_screen.dart';
 import '../Screens/confirm_save_exit_screen.dart';
 import '../Screens/new_play_screen.dart';
 import '../Models/Game.dart';
@@ -12,8 +11,9 @@ class InGameScreen extends StatefulWidget {
   DateTime contestDate;
   String opponent;
   String finalScore;
+  int startingYardLine;
   
-  InGameScreen({Key key, this.contestDate, this.opponent, this.listOfPlays}) : super(key: key);
+  InGameScreen({Key key, this.contestDate, this.opponent, this.listOfPlays, this.startingYardLine}) : super(key: key);
 
   @override
   _InGameScreenState createState() => _InGameScreenState();
@@ -21,67 +21,88 @@ class InGameScreen extends StatefulWidget {
 
 class _InGameScreenState extends State<InGameScreen> {
 
+  int prevDown;
+  int prevDist;
+  int prevYardLine;
+
+  int currentYardLine;
   int currentDown;
   int currentDist;
 
-  int prevDown;
-  int prevDist;
-
-  int yardLine;
-
-  String currentDownAndDist;
   NewPlay previousPlay;
 
   
   initState(){
     super.initState();
-    currentDown = 1;
-    currentDist = 10;
-    yardLine = -20;
+    prevYardLine = -20;
     if (widget.listOfPlays.length > 0){
       previousPlay = NewPlay.fromJson(widget.listOfPlays[widget.listOfPlays.length - 1]);
     }
-  }
 
-  calcCurrentYardLine(){
     if (previousPlay != null){
-      setState(() {
-        if (yardLine < 0){
-          if (yardLine - previousPlay.netYardage > -50){
-            yardLine = yardLine - previousPlay.netYardage;
-          }
-          else{
-            yardLine = 100 - previousPlay.netYardage + yardLine;
-          }
+      //calculate yard line
+      if (previousPlay.yardLine < 0){
+        if (previousPlay.yardLine - previousPlay.netYardage > -50){
+          currentYardLine = previousPlay.yardLine - previousPlay.netYardage;
         }
         else{
-          yardLine = yardLine - previousPlay.netYardage;
+          currentYardLine = 100 - previousPlay.netYardage + previousPlay.yardLine;
         }
-      });
-    }
-  }
-
-  calcCurrentDownAndDist(){
-    if (previousPlay == null){
-      currentDist = currentDist;
-    }
-    else{
-      if(previousPlay.netYardage != null && previousPlay.netYardage < currentDist){
-        setState(() {
-          if(currentDown < 3)
-            currentDown = currentDown + 1;
-          else
-            currentDown = 1;
-          currentDist = currentDist - previousPlay.netYardage;
-        });
       }
       else{
-        setState(() {
-          currentDown = 1;
+        currentYardLine = previousPlay.yardLine - previousPlay.netYardage;
+      }
+      //calculate dist
+      if (previousPlay.netYardage < previousPlay.dist){
+        if (previousPlay.down == 4){
           currentDist = 10;
-        });
+        }
+        else{
+          currentDist = previousPlay.dist - previousPlay.netYardage;
+        }
+      }
+      else{
+        currentDist = 10;
+      }
+      //calculate down
+      
+      //if accepted penalty, replay down
+      if (previousPlay.typeOfPlay == 'Pre-Play Penalty' || previousPlay.typeOfPlay == 'Post-Play Penalty'){
+        //if loss of down
+        if (previousPlay.specificType == 'Intentional Grounding'){
+          currentDown = previousPlay.down + 1;
+        }
+        //if no loss of down
+        else{
+          currentDown = previousPlay.down;
+        }
+      }
+      //if kick, end of drive
+      else if (previousPlay.typeOfPlay == 'Kick'){
+        currentDown = 1;
+      }
+      //if not 4th down, increment down
+      else if (previousPlay.down < 4){
+        print(previousPlay.down);
+        if (previousPlay.netYardage < previousPlay.dist){
+          currentDown = previousPlay.down + 1;
+        }
+        else{
+          currentDown = 1;
+        }
+      }
+      //if 4th down, increment to 1st down
+      else{
+        currentDown = 1;
       }
     }
+    //if there is no previous play
+    else{
+      currentDown = 1;
+      currentDist = 10;
+      currentYardLine = widget.startingYardLine;
+    }
+
   }
 
   @override
@@ -98,9 +119,9 @@ class _InGameScreenState extends State<InGameScreen> {
         drawer: MyDrawer(context, widget.contestDate, widget.opponent, widget.listOfPlays, widget.finalScore),
         body: TabBarView(
           children: <Widget>[
-            CurrentSituation(context, currentDown, currentDist, yardLine, previousPlay),
+            CurrentSituation(context, currentDown, currentDist, currentYardLine, previousPlay),
             AllPlaysListView(context, widget.listOfPlays),
-            Text("Jake")
+            Center(child: Text("Analytics"))
           ],
         ),
         bottomSheet: Row(
@@ -110,7 +131,7 @@ class _InGameScreenState extends State<InGameScreen> {
               child: Icon(Icons.add),
               backgroundColor: Colors.green,
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => NewPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => NewPlayScreen(contestDate: widget.contestDate, opponent: widget.opponent, listOfPlays: widget.listOfPlays, previousDown: currentDown, previousDist: currentDist, previousYardLine: currentYardLine)));
               },
             ),
           ]
@@ -190,14 +211,14 @@ Widget MenuTileWidget(BuildContext context, iconName, name, DateTime contestDate
   );
 }
 
-Widget CurrentSituation(BuildContext context, int currentDown, int currentDist, int yardLine, NewPlay previousPlay){
+Widget CurrentSituation(BuildContext context, int currentDown, int currentDist, int currentYardLine, NewPlay previousPlay){
   return Scaffold(
     body: Column(
       children: <Widget> [
         SizedBox(
           height: 20,
         ),
-        DownAndDistanceBox(context, currentDown, currentDist, yardLine),
+        DownAndDistanceBox(context, currentDown, currentDist, currentYardLine, previousPlay),
         SizedBox(
           height: 20,
         ),
@@ -207,7 +228,7 @@ Widget CurrentSituation(BuildContext context, int currentDown, int currentDist, 
   );
 }
 
-Widget DownAndDistanceBox(BuildContext context, int currentDown, int currentDist, int yardLine){
+Widget DownAndDistanceBox(BuildContext context, int currentDown, int currentDist, int currentYardLine, NewPlay previousPlay){
   return Center(
     child: ClipRRect(
       borderRadius: BorderRadius.circular(30),
@@ -229,9 +250,9 @@ Widget DownAndDistanceBox(BuildContext context, int currentDown, int currentDist
                   currentDown == 1 ? Text("1st & $currentDist", style: TextStyle(color: Colors.green, fontSize: 75),) 
                   : currentDown == 2 ? Text("2nd & $currentDist", style: TextStyle(color: Colors.green, fontSize: 75),) 
                   : currentDown == 3 ? Text("3rd & $currentDist", style: TextStyle(color: Colors.green, fontSize: 75),) 
-                  : Text("3rd & $currentDist", style: TextStyle(color: Colors.green, fontSize: 75),),
-                  yardLine < 0 ? Text("on our own ${-1*yardLine} yard line", style: TextStyle(fontSize: 20),) :
-                  Text("on opp $yardLine yard line", style: TextStyle(fontSize: 20),),
+                  : Text("4th & $currentDist", style: TextStyle(color: Colors.green, fontSize: 75),),
+                  currentYardLine < 0 ? Text("on our own ${-1*currentYardLine} yard line", style: TextStyle(fontSize: 20),) :
+                  Text("on opp $currentYardLine yard line", style: TextStyle(fontSize: 20),),
                 ]
               ),
             ),
@@ -324,7 +345,7 @@ Widget prevPlay(BuildContext context, NewPlay play){
 Widget PlayListItem(BuildContext context, play, int index){
   NewPlay _play = NewPlay.fromJson(play);
   return ListTile(
-        leading: Text("$index"),
+        leading: Text("$index", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         title: Card(
           child: Padding(
             padding: EdgeInsets.all(10),
@@ -336,6 +357,15 @@ Widget PlayListItem(BuildContext context, play, int index){
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child:_play.typeOfPlay != null && _play.specificType != null ? 
+                    //if penalty
+                    _play.typeOfPlay == 'Pre-Play Penalty' || _play.typeOfPlay == 'Post-Play Penalty'
+                    ? 
+                    Text(
+                      "${_play.typeOfPlay}: ${_play.specificType}",
+                      style: TextStyle(color: Colors.white),
+                    ) 
+                    //else
+                    :
                     Text(
                       "${_play.specificType} ${_play.typeOfPlay}",
                       style: TextStyle(color: Colors.white),

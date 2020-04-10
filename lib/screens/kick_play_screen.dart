@@ -136,7 +136,7 @@ class _KickPlayScreenState extends State<KickPlayScreen> {
             MadeOrMissedSwitch(context, isSwitched, setMySwitch) 
             : SizedBox(height: 0),
             SizedBox(height: 20),
-            _radioChoice == 3 ? LengthOfFieldGoalPicker(context, _currentValue, setMyPicker)
+            _radioChoice == 3 ? LengthOfFieldGoalPicker(context, widget.newPlay.yardLine, _currentValue, setMyPicker)
             : SizedBox(height: 0),
             SizedBox(height: 50,),
             ClipRRect(
@@ -210,7 +210,7 @@ Widget MadeOrMissedSwitch(BuildContext context, bool isSwitched, void Function(b
   );
 }
 
-Widget LengthOfFieldGoalPicker(BuildContext context, int _currentValue, void Function(int newValue) setMyPicker){
+Widget LengthOfFieldGoalPicker(BuildContext context, int ydline, int _currentValue, void Function(int newValue) setMyPicker){
   return Column(
     children: <Widget> [
       Text("Distance:", style: TextStyle(fontSize: 30),),
@@ -222,8 +222,8 @@ Widget LengthOfFieldGoalPicker(BuildContext context, int _currentValue, void Fun
           data: Theme.of(context).copyWith(accentColor: Colors.white),
           child: NumberPicker.integer(
             initialValue: _currentValue,
-            minValue: 5,
-            maxValue: 70,
+            minValue: ydline < 0 ? ydline : -1*(100 - ydline),
+            maxValue: ydline < 0 ? 100 + ydline : ydline,
             onChanged: (newValue) {
               setMyPicker(newValue);
             }
